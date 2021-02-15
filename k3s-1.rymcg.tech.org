@@ -358,7 +358,7 @@ export PGUSER=<<POSTGRES_DATABASE_USER>>
 poetry update && poetry install && uvicorn main:app --reload &
 #+end_src
 
-You can switch to the =pyapp-uvicorn= buffer to watch the application log
+You can switch to the =pyapp-uvicorn= Emacs buffer to watch the application log
 output.
 
 You can test that the service endpoint works, with curl:
@@ -366,9 +366,6 @@ You can test that the service endpoint works, with curl:
 #+begin_src shell :noweb yes :eval never-export :exports both :results output
 curl http://127.0.0.1:8000/
 #+end_src
-
-#+RESULTS:
-: {"message":"Hello World"}
 
 ** Build container image for production
 ** pyapp/pyapp/main.py
