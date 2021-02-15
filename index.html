@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-02-15 Mon 13:57 -->
+<!-- 2021-02-15 Mon 14:19 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>k3s-1.rymcg.tech</title>
@@ -597,7 +597,7 @@ This is the source download URL for this document, used in the <a href="#Getting
 guide above.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org9fd7650">https://raw.githubusercontent.com/EnigmaCurry/k3s-1.rymcg.tech/master/k3s-1.rymcg.tech.org
+<pre class="src src-config" id="orge17b200">https://raw.githubusercontent.com/EnigmaCurry/k3s-1.rymcg.tech/master/k3s-1.rymcg.tech.org
 </pre>
 </div>
 </div>
@@ -609,7 +609,7 @@ guide above.
 Set <code>CLUSTER</code> to be the domain name for your cluster:
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgfa068db">k3s-1.rymcg.tech
+<pre class="src src-config" id="orgaeed21a">k3s-1.rymcg.tech
 </pre>
 </div>
 </div>
@@ -623,7 +623,7 @@ cloud deployments, this should be <code>root</code>, but you can also use an acc
 no-password sudo privileges.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org9da15fc">ryan
+<pre class="src src-config" id="orgf95b993">ryan
 </pre>
 </div>
 </div>
@@ -635,7 +635,7 @@ no-password sudo privileges.
 <code>KUBE_CONFIG</code> is the local path to the kubectl config file
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org133ebb8">${HOME}/.kube/k3s-1.rymcg.tech-config
+<pre class="src src-config" id="orgd50fb32">${HOME}/.kube/k3s-1.rymcg.tech-config
 </pre>
 </div>
 </div>
@@ -649,7 +649,7 @@ Since you'll need to specify the kubectl config file each and every time you use
 code blocks.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgc5982b3">kubectl --kubeconfig=${HOME}/.kube/k3s-1.rymcg.tech-config
+<pre class="src src-config" id="orgb21fdb0">kubectl --kubeconfig=${HOME}/.kube/k3s-1.rymcg.tech-config
 </pre>
 </div>
 </div>
@@ -724,7 +724,7 @@ Edit the variables for the Traefik config:
 provider. 
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgb59416a">letsencrypt@enigmacurry.com
+<pre class="src src-config" id="orgc1f77f4">letsencrypt@enigmacurry.com
 </pre>
 </div>
 </div>
@@ -740,7 +740,7 @@ valid certificates in web browsers).
 </p>
 
 <div class="org-src-container">
-<pre class="src src-config" id="org2b0515b">https://acme-staging-v02.api.letsencrypt.org/directory
+<pre class="src src-config" id="org6d16304">https://acme-staging-v02.api.letsencrypt.org/directory
 </pre>
 </div>
 </div>
@@ -755,7 +755,7 @@ domain name to respond to. <code>TRAEFIK_WHOAMI_DOMAIN</code> is the subdomain t
 whoami service responds to.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orga3a8ebc">whoami.k3s-1.rymcg.tech
+<pre class="src src-config" id="org3397a26">whoami.k3s-1.rymcg.tech
 </pre>
 </div>
 </div>
@@ -767,7 +767,7 @@ whoami service responds to.
 The version number of Traefik to install (eg. <code>2.3</code>).
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org43d2469">v2.3
+<pre class="src src-config" id="orgfe65351">v2.3
 </pre>
 </div>
 </div>
@@ -779,7 +779,7 @@ The version number of Traefik to install (eg. <code>2.3</code>).
 <code>TRAEFIK_LOG_LEVEL</code> is the filter level on the traefik log.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org0dbf485">INFO
+<pre class="src src-config" id="org545b65c">INFO
 </pre>
 </div>
 </div>
@@ -803,7 +803,7 @@ repository. Only the cluster can decrypt sealed secrets.
 <h4 id="kube-system%2Fsealed-secrets%2Fkustomization.yaml"><span class="section-number-4">4.2.1</span> kube-system/sealed-secrets/kustomization.yaml</h4>
 <div class="outline-text-4" id="text-4-2-1">
 <div class="org-src-container">
-<pre class="src src-yaml" id="org59f59fd"><span style="color: #7590db;">apiVersion</span>: kustomize.config.k8s.io/v1beta1
+<pre class="src src-yaml" id="org1b8f7d5"><span style="color: #7590db;">apiVersion</span>: kustomize.config.k8s.io/v1beta1
 <span style="color: #7590db;">kind</span>: Kustomization
 <span style="color: #7590db;">resources</span>:
 - https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.14.1/controller.yaml
@@ -818,7 +818,7 @@ repository. Only the cluster can decrypt sealed secrets.
 Choose the <a href="https://github.com/bitnami-labs/sealed-secrets/releases">release version for Sealed Secrets</a>
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgc992d06">v0.14.1
+<pre class="src src-config" id="org4faa484">v0.14.1
 </pre>
 </div>
 </div>
@@ -895,7 +895,7 @@ Test with TLS verification on:
 </div>
 
 <p>
-TLS will not verify until you use the production <a href="#org2b0515b">TRAEFIK_ACME_SERVER</a>.
+TLS will not verify until you use the production <a href="#org6d16304">TRAEFIK_ACME_SERVER</a>.
 </p>
 </div>
 </div>
@@ -1111,7 +1111,7 @@ to direct traffic to any other node.
 <div class="outline-text-4" id="text-4-3-7">
 <p>
 <a href="https://github.com/traefik/whoami">traefik/whoami</a> can be deployed to test Traefik functionality. It listens to the
-domain <a href="#orga3a8ebc">TRAEFIK_WHOAMI_DOMAIN</a> (eg. <code>whoami.k3s.example.com</code>).
+domain <a href="#org3397a26">TRAEFIK_WHOAMI_DOMAIN</a> (eg. <code>whoami.k3s.example.com</code>).
 </p>
 
 <div class="org-src-container">
@@ -1218,7 +1218,7 @@ The name of the git repository containing these org files, and from which flux
 reads. Usually it's the same as <code>CLUSTER</code>.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org10ca5fe">k3s-1.rymcg.tech
+<pre class="src src-config" id="orgfef6411">k3s-1.rymcg.tech
 </pre>
 </div>
 </div>
@@ -1230,7 +1230,7 @@ reads. Usually it's the same as <code>CLUSTER</code>.
 The name of the owner of the git repository.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org7b96b65">EnigmaCurry
+<pre class="src src-config" id="orgade8e63">EnigmaCurry
 </pre>
 </div>
 </div>
@@ -1242,7 +1242,7 @@ The name of the owner of the git repository.
 The Hostname and Port number of the git repository remote URL:
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orge8a0205">github.com:22
+<pre class="src src-config" id="orgf7432d6">github.com:22
 </pre>
 </div>
 </div>
@@ -1258,7 +1258,7 @@ organization name. (This might work with other URL forms, like HTTPS, but this
 is the only one that's been tested:)
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orge8e3308">ssh://git@github.com:22/EnigmaCurry/k3s-1.rymcg.tech.git
+<pre class="src src-config" id="org751519a">ssh://git@github.com:22/EnigmaCurry/k3s-1.rymcg.tech.git
 </pre>
 </div>
 </div>
@@ -1285,6 +1285,7 @@ container</a> or use the <code>flux-go</code> AUR package on Arch Linux.
 </div>
 </div>
 </div>
+
 <div id="outline-container-Deploy%20Flux" class="outline-4">
 <h4 id="Deploy%20Flux"><span class="section-number-4">5.2.2</span> Deploy Flux</h4>
 <div class="outline-text-4" id="text-5-2-2">
@@ -1311,7 +1312,7 @@ with its state.
 
 <p>
 If using Gitea, click the <code>+</code> icon in the upper right corner to create a <code>New
-Repository</code>. Call the new repository the same as <a href="#org10ca5fe">FLUX_REPO_NAME</a>.
+Repository</code>. Call the new repository the same as <a href="#orgfef6411">FLUX_REPO_NAME</a>.
 </p>
 
 <p>
@@ -1528,7 +1529,6 @@ And in another minute or so, the namespace should be gone:
 <span style="color: #7590db;">resources</span>:
 - gotk-components.yaml
 - helm.sources.yaml
-- kustomize.sources.yaml
 </pre>
 </div>
 </div>
@@ -1555,35 +1555,7 @@ And in another minute or so, the namespace should be gone:
 <div id="outline-container-postgres" class="outline-2">
 <h2 id="postgres"><span class="section-number-2">6</span> postgres</h2>
 <div class="outline-text-2" id="text-6">
-<pre class="example">
-** Postgres Config
-*** POSTGRES_PVC_SIZE
-    How big do you want the database volume?
-    #+name: POSTGRES_PVC_SIZE
-    #+begin_src config :noweb yes :eval no
-    1Gi
-    #+end_src
-*** POSTGRES_HELM_CHART_VERSION
-    What version of the [[https://github.com/bitnami/charts/tree/master/bitnami/postgresql][PostgreSQL Helm Chart]] do you want to install?
-    #+name: POSTGRES_HELM_CHART_VERSION
-    #+begin_src config :noweb yes :eval no
-    10.1.1
-    #+end_src
-*** POSTGRES_DATABASE_NAME
-    What is the name for the initial database?
-    #+name: POSTGRES_DATABASE_NAME
-    #+begin_src config :noweb yes :eval no
-    postgres
-    #+end_src
-*** POSTGRES_DATABASE_USER
-    What is the name of the user to access the database?
-    #+name: POSTGRES_DATABASE_USER
-    #+begin_src config :noweb yes :eval no
-    postgres
-    #+end_src
-</pre>
 </div>
-
 <div id="outline-container-Postgres%20Config" class="outline-3">
 <h3 id="Postgres%20Config"><span class="section-number-3">6.1</span> Postgres Config</h3>
 <div class="outline-text-3" id="text-6-1">
@@ -1595,7 +1567,7 @@ And in another minute or so, the namespace should be gone:
 How big do you need the Database volume?
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgd369d2f">1Gi
+<pre class="src src-config" id="org71e52ca">1Gi
 </pre>
 </div>
 </div>
@@ -1607,7 +1579,7 @@ How big do you need the Database volume?
 What version of the <a href="https://github.com/bitnami/charts/tree/master/bitnami/postgresql">PostgreSQL Helm Chart</a> do you want to install?
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org7120d64">10.1.1
+<pre class="src src-config" id="org9a18837">10.1.1
 </pre>
 </div>
 </div>
@@ -1617,7 +1589,7 @@ What version of the <a href="https://github.com/bitnami/charts/tree/master/bitna
 <h4 id="POSTGRES_DATABASE_NAME"><span class="section-number-4">6.1.3</span> POSTGRES_DATABASE_NAME</h4>
 <div class="outline-text-4" id="text-6-1-3">
 <div class="org-src-container">
-<pre class="src src-config" id="org1c30a93">pyapp
+<pre class="src src-config" id="org5090492">pyapp
 </pre>
 </div>
 </div>
@@ -1626,7 +1598,7 @@ What version of the <a href="https://github.com/bitnami/charts/tree/master/bitna
 <h4 id="POSTGRES_DATABASE_USER"><span class="section-number-4">6.1.4</span> POSTGRES_DATABASE_USER</h4>
 <div class="outline-text-4" id="text-6-1-4">
 <div class="org-src-container">
-<pre class="src src-config" id="org2146c3d">pyapp
+<pre class="src src-config" id="org5df2407">pyapp
 </pre>
 </div>
 </div>
@@ -1659,7 +1631,7 @@ directly from the Secret stored in the cluster and set this variable:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell" id="orga5ca0a8"><span style="color: #4f97d7;">export</span> <span style="color: #7590db;">KUBECONFIG</span>=$<span style="color: #4f97d7;">{</span><span style="color: #7590db;">HOME</span><span style="color: #4f97d7;">}</span>/.kube/k3s-1.rymcg.tech-config
+<pre class="src src-shell" id="orgf0d76f6"><span style="color: #4f97d7;">export</span> <span style="color: #7590db;">KUBECONFIG</span>=$<span style="color: #4f97d7;">{</span><span style="color: #7590db;">HOME</span><span style="color: #4f97d7;">}</span>/.kube/k3s-1.rymcg.tech-config
 <span style="color: #4f97d7;">export</span> <span style="color: #7590db;">PGPASSWORD</span>=$<span style="color: #4f97d7;">(</span><span style="color: #fa8072;">kubectl</span> -n postgres get secret/postgres-postgresql <span style="color: #2d9574;">\</span>
   -o <span style="color: #7590db;">jsonpath</span>=<span style="color: #2d9574;">'{.data.postgresql-password}'</span> | base64 -d<span style="color: #4f97d7;">)</span>
 <span style="color: #4f97d7;">export</span> <span style="color: #7590db;">PGHOST</span>=localhost
@@ -1764,7 +1736,7 @@ psql -c <span style="color: #2d9574;">'SELECT 1'</span>
 <p>
 <code>pyapp</code> is the namespace that will contain the Python app with FastAPI server.
 It will connect to the database already prepared in the <code>postgres</code> namespace.
-The python app itself, which builds into a container, has source code in a
+The python app itself (which builds into a container) has source code in a
 sub-directory of the same name: <code>pyapp</code>.
 </p>
 </div>
@@ -1773,7 +1745,7 @@ sub-directory of the same name: <code>pyapp</code>.
 <div class="outline-text-3" id="text-7-1">
 <ol class="org-ol">
 <li>Install Python 3 from your package manager.</li>
-<li>Ensure essential packages are installed:</li>
+<li>Install latest pip and virtualenv:</li>
 </ol>
 <div class="org-src-container">
 <pre class="src src-shell">python3 -m ensurepip &amp;&amp; python3 -m pip install pip --upgrade &amp;&amp; <span style="color: #2d9574;">\</span>
@@ -2092,7 +2064,7 @@ along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: EnigmaCurry</p>
-<p class="date">Created: 2021-02-15 Mon 13:57</p>
+<p class="date">Created: 2021-02-15 Mon 14:19</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

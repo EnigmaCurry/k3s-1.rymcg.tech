@@ -292,32 +292,6 @@ Follow the deployment instructions in the Flux library INCLUDE:
 #+END_COMMENT
 #+INCLUDE: "~/git/vendor/enigmacurry/literate-k3s/lib/flux.org"
 * postgres
-: ** Postgres Config
-: *** POSTGRES_PVC_SIZE
-:     How big do you want the database volume?
-:     #+name: POSTGRES_PVC_SIZE
-:     #+begin_src config :noweb yes :eval no
-:     1Gi
-:     #+end_src
-: *** POSTGRES_HELM_CHART_VERSION
-:     What version of the [[https://github.com/bitnami/charts/tree/master/bitnami/postgresql][PostgreSQL Helm Chart]] do you want to install?
-:     #+name: POSTGRES_HELM_CHART_VERSION
-:     #+begin_src config :noweb yes :eval no
-:     10.1.1
-:     #+end_src
-: *** POSTGRES_DATABASE_NAME
-:     What is the name for the initial database?
-:     #+name: POSTGRES_DATABASE_NAME
-:     #+begin_src config :noweb yes :eval no
-:     postgres
-:     #+end_src
-: *** POSTGRES_DATABASE_USER
-:     What is the name of the user to access the database?
-:     #+name: POSTGRES_DATABASE_USER
-:     #+begin_src config :noweb yes :eval no
-:     postgres
-:     #+end_src
-
 ** Postgres Config
 *** POSTGRES_PVC_SIZE
     How big do you need the Database volume?
@@ -344,17 +318,18 @@ pyapp
 #+end_src
 ** Postgres Deployment
 #+BEGIN_COMMENT
-Follow the deployment instructions in the Postgres library INCLUDE:
+Follow the instructions in the Postgres library INCLUDE for creating a port
+forward from your local workstation to the database:
 #+END_COMMENT
 #+INCLUDE: "~/git/vendor/enigmacurry/literate-k3s/lib/postgres.org"
 * pyapp
 =pyapp= is the namespace that will contain the Python app with FastAPI server.
 It will connect to the database already prepared in the =postgres= namespace.
-The python app itself, which builds into a container, has source code in a
+The python app itself (which builds into a container) has source code in a
 sub-directory of the same name: =pyapp=.
 ** Install local development requirements 
   1. Install Python 3 from your package manager.
-  2. Ensure essential packages are installed:
+  2. Install latest pip and virtualenv:
   #+begin_src shell :noweb yes :eval never-export :results output
   python3 -m ensurepip && python3 -m pip install pip --upgrade && \
      python3 -m pip install virtualenv
