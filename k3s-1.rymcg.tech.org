@@ -268,7 +268,7 @@ reads. Usually it's the same as =CLUSTER=.
 The name of the owner of the git repository.
 #+name: FLUX_REPO_ORG
 #+begin_src config :noweb yes :eval no
-EnigmaCurry
+enigmacurry
 #+end_src
 *** FLUX_REPO_HOST_PORT
 The Hostname and Port number of the git repository remote URL:
@@ -327,6 +327,13 @@ forward from your local workstation to the database:
 It will connect to the database already prepared in the =postgres= namespace.
 The python app itself (which builds into a container) has source code in a
 sub-directory of the same name: =pyapp=.
+** pyapp config
+*** PYAPP_FASTAPI_IMAGE
+    What is the name of the image to build with FastAPI?
+    #+name: PYAPP_FASTAPI_IMAGE
+    #+begin_src config :noweb yes :eval no
+    ghcr.io/<<FLUX_REPO_ORG>>/fastapi-demo-pyapp
+    #+end_src
 ** Install local development requirements 
   1. Install Python 3 from your package manager.
   2. Install latest pip and virtualenv:
@@ -364,29 +371,66 @@ output.
 You can test that the service endpoint works, with curl:
 
 #+begin_src shell :noweb yes :eval never-export :exports both :results output
-curl http://127.0.0.1:8000/
+curl http://127.0.0.1:8000/?name=${USER}
 #+end_src
 
 ** Build container image for production
+   Rebuild the container image:
+   #+begin_src shell :noweb yes :eval never-export :results output
+   podman build -t <<PYAPP_FASTAPI_IMAGE>> <<SRC_DIR>>/pyapp/pyapp
+   #+end_src
+
+   Push the image to the registry:
+   #+begin_src shell :noweb yes :eval never-export :exports code
+   podman push <<PYAPP_FASTAPI_IMAGE>>
+   #+end_src
+
 ** pyapp/pyapp/main.py
 This is the main FastAPI server code:
 #+begin_src python :noweb yes :eval no :tangle pyapp/pyapp/main.py
-from fastapi import FastAPI
-import model
-import logging
+  from fastapi import FastAPI, Header
+  from typing import Optional
+  import model
+  import logging
+  import hashlib
 
-logging.basicConfig(level=logging.DEBUG)
+  logging.basicConfig(level=logging.DEBUG)
+  log = logging.getLogger(__name__)
+  app = FastAPI()
 
-app = FastAPI()
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+  def record_visit(path, ip_address, user_agent, name):
+      fingerprint = hashlib.sha256(
+          f"{ip_address}-{user_agent}-{name}".encode("utf-8")).hexdigest()
+      with model.session() as s:
+          r = s.execute(model.VisitsRecord.search(path, fingerprint)).first()
+          if r is None:
+              r = model.VisitsRecord(path=path, user_fingerprint=fingerprint, visits=1)
+              s.add(r)
+          else:
+              s.execute(model.VisitsRecord.visit(path, fingerprint))
+              r = s.execute(model.VisitsRecord.search(path, fingerprint)).first()[0]
+          log.info(f"Visit: path={path} r={r}")
+          s.commit()
+          return r.visits
+
+  @app.get("/")
+  async def root(x_real_ip: str = Header(None),
+                 user_agent: str = Header(None),
+                 name: Optional[str] = None):
+      num_visits = record_visit("/", x_real_ip, user_agent, name)
+      greet = "Hi there" if name is None else f"Hi {name}"
+      if num_visits == 1:
+          return dict(
+              message=f"{greet}, this must be your first time visiting this page")
+      else:
+          return dict(
+              message=f"{greet}, you have visited this page {num_visits} times.")
 #+end_src
 ** pyapp/pyapp/model.py
 This is the main SQLAlchemy Database code:
 #+begin_src python :noweb yes :eval no :tangle pyapp/pyapp/model.py
-  from sqlalchemy import create_engine, select, \
-      Table, Column, Integer, String, ForeignKey
+  from sqlalchemy import create_engine, select, update, \
+      Table, Column, Integer, String, ForeignKey, and_
   from sqlalchemy.orm import registry, relationship, Session
   from dataclasses import dataclass, field
   from typing import List, Optional
@@ -431,24 +475,37 @@ This is the main SQLAlchemy Database code:
 
   @mapper_registry.mapped
   @dataclass
-  class ImageRecord:
+  class VisitsRecord:
       __table__ = Table(
-          "image",
+          "visits",
           mapper_registry.metadata,
-          Column("url", String(2000), primary_key=True),
-          Column("path", String(500)),
-          Column("source", String(50), ForeignKey("image_source.name")),
+          Column("path", String(2000), primary_key=True),
+          Column("user_fingerprint", String(500), primary_key=True),
+          Column("visits", Integer, default=0)
       )
-      url: str
       path: str
-      source: str
+      user_fingerprint: str
+      visits: int
 
       @classmethod
-      def search(cls, search_term: str, source: str = None):
-          q = select(ImageRecord).join(ImageSource.images)
-          if source:
-              q = q.where(ImageSource.name == source)
-          return q
+      def search(cls, path: str, user_fingerprint: str):
+          return select(VisitsRecord).where(and_(
+              VisitsRecord.path == path,
+              VisitsRecord.user_fingerprint == user_fingerprint))
+
+      @classmethod
+      def visit(cls, path: str, user_fingerprint: str):
+          return update(VisitsRecord).where(and_(
+              VisitsRecord.path == path,
+              VisitsRecord.user_fingerprint == user_fingerprint
+          )).values(visits=VisitsRecord.visits + 1)
+
+  mapper_registry.metadata.create_all()
+#+end_src
+** pyapp/pyapp/Dockerfile
+#+begin_src docker :noweb yes :eval no :tangle pyapp/pyapp/Dockerfile
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
+COPY ./ /app
 #+end_src
 ** pyapp/pyapp/.gitignore
 #+begin_src python :noweb yes :eval no :tangle pyapp/pyapp/.gitignore
@@ -462,8 +519,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - namespace.yaml
+- deployment.yaml
 #+end_src
-
 ** pyapp/namespace.yaml
 #+begin_src yaml :noweb yes :eval no :tangle pyapp/namespace.yaml
 apiVersion: v1
@@ -472,6 +529,30 @@ metadata:
   name: pyapp
 #+end_src
 
+** pyapp/deployment.yaml
+#+begin_src yaml :noweb yes :eval no :tangle pyapp/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pyapp-fastapi
+  labels:
+    app: pyapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pyapp
+  template:
+    metadata:
+      labels:
+        app: pyapp
+    spec:
+      containers:
+      - name: pyapp-fastapi
+        image: <<PYAPP_FASTAPI_IMAGE>>
+        ports:
+        - containerPort: 8000
+#+end_src
 ** pyapp/pyapp/pyproject.toml
 #+begin_src yaml :noweb yes :eval no :tangle pyapp/pyapp/pyproject.toml
 [tool.poetry]

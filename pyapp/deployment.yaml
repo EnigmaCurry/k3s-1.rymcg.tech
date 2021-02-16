@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pyapp-fastapi
+  labels:
+    app: pyapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pyapp
+  template:
+    metadata:
+      labels:
+        app: pyapp
+    spec:
+      containers:
+      - name: pyapp-fastapi
+        image: ghcr.io/enigmacurry/fastapi-demo-pyapp
+        ports:
+        - containerPort: 8000

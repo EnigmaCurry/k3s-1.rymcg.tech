@@ -1,5 +1,5 @@
-from sqlalchemy import create_engine, select, \
-    Table, Column, Integer, String, ForeignKey
+from sqlalchemy import create_engine, select, update, \
+    Table, Column, Integer, String, ForeignKey, and_
 from sqlalchemy.orm import registry, relationship, Session
 from dataclasses import dataclass, field
 from typing import List, Optional
@@ -44,21 +44,29 @@ def session():
 
 @mapper_registry.mapped
 @dataclass
-class ImageRecord:
+class VisitsRecord:
     __table__ = Table(
-        "image",
+        "visits",
         mapper_registry.metadata,
-        Column("url", String(2000), primary_key=True),
-        Column("path", String(500)),
-        Column("source", String(50), ForeignKey("image_source.name")),
+        Column("path", String(2000), primary_key=True),
+        Column("user_fingerprint", String(500), primary_key=True),
+        Column("visits", Integer, default=0)
     )
-    url: str
     path: str
-    source: str
+    user_fingerprint: str
+    visits: int
 
     @classmethod
-    def search(cls, search_term: str, source: str = None):
-        q = select(ImageRecord).join(ImageSource.images)
-        if source:
-            q = q.where(ImageSource.name == source)
-        return q
+    def search(cls, path: str, user_fingerprint: str):
+        return select(VisitsRecord).where(and_(
+            VisitsRecord.path == path,
+            VisitsRecord.user_fingerprint == user_fingerprint))
+
+    @classmethod
+    def visit(cls, path: str, user_fingerprint: str):
+        return update(VisitsRecord).where(and_(
+            VisitsRecord.path == path,
+            VisitsRecord.user_fingerprint == user_fingerprint
+        )).values(visits=VisitsRecord.visits + 1)
+
+mapper_registry.metadata.create_all()
