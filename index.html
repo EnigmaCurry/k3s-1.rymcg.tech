@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-02-15 Mon 18:00 -->
+<!-- 2021-02-17 Wed 09:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>k3s-1.rymcg.tech</title>
@@ -425,12 +425,13 @@ for the JavaScript code in this tag.
 <li><a href="#Build%20container%20image%20for%20production">7.5. Build container image for production</a></li>
 <li><a href="#pyapp%2Fpyapp%2Fmain.py">7.6. pyapp/pyapp/main.py</a></li>
 <li><a href="#pyapp%2Fpyapp%2Fmodel.py">7.7. pyapp/pyapp/model.py</a></li>
-<li><a href="#pyapp%2Fpyapp%2FDockerfile">7.8. pyapp/pyapp/Dockerfile</a></li>
-<li><a href="#pyapp%2Fpyapp%2F.gitignore">7.9. pyapp/pyapp/.gitignore</a></li>
-<li><a href="#pyapp%2Fkustomization.yaml">7.10. pyapp/kustomization.yaml</a></li>
-<li><a href="#pyapp%2Fnamespace.yaml">7.11. pyapp/namespace.yaml</a></li>
-<li><a href="#pyapp%2Fdeployment.yaml">7.12. pyapp/deployment.yaml</a></li>
-<li><a href="#pyapp%2Fpyapp%2Fpyproject.toml">7.13. pyapp/pyapp/pyproject.toml</a></li>
+<li><a href="#pyapp%2Fpyapp%2Fpyproject.toml">7.8. pyapp/pyapp/pyproject.toml</a></li>
+<li><a href="#pyapp%2Fpyapp%2FDockerfile">7.9. pyapp/pyapp/Dockerfile</a></li>
+<li><a href="#pyapp%2Fpyapp%2F.dockerignore">7.10. pyapp/pyapp/.dockerignore</a></li>
+<li><a href="#pyapp%2Fpyapp%2F.gitignore">7.11. pyapp/pyapp/.gitignore</a></li>
+<li><a href="#pyapp%2Fkustomization.yaml">7.12. pyapp/kustomization.yaml</a></li>
+<li><a href="#pyapp%2Fnamespace.yaml">7.13. pyapp/namespace.yaml</a></li>
+<li><a href="#pyapp%2Fdeployment.yaml">7.14. pyapp/deployment.yaml</a></li>
 </ul>
 </li>
 <li><a href="#LICENSE">8. LICENSE</a></li>
@@ -604,7 +605,7 @@ This is the source download URL for this document, used in the <a href="#Getting
 guide above.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org91606cd">https://raw.githubusercontent.com/EnigmaCurry/k3s-1.rymcg.tech/master/k3s-1.rymcg.tech.org
+<pre class="src src-config" id="orga1602f0">https://raw.githubusercontent.com/EnigmaCurry/k3s-1.rymcg.tech/master/k3s-1.rymcg.tech.org
 </pre>
 </div>
 </div>
@@ -616,7 +617,7 @@ guide above.
 Set <code>CLUSTER</code> to be the domain name for your cluster:
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org15a32d6">k3s-1.rymcg.tech
+<pre class="src src-config" id="orge770a0f">k3s-1.rymcg.tech
 </pre>
 </div>
 </div>
@@ -630,7 +631,7 @@ cloud deployments, this should be <code>root</code>, but you can also use an acc
 no-password sudo privileges.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orge18bb49">ryan
+<pre class="src src-config" id="orga306205">ryan
 </pre>
 </div>
 </div>
@@ -642,7 +643,7 @@ no-password sudo privileges.
 <code>KUBE_CONFIG</code> is the local path to the kubectl config file
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org60b9d15">${HOME}/.kube/k3s-1.rymcg.tech-config
+<pre class="src src-config" id="orgeb329d5">${HOME}/.kube/k3s-1.rymcg.tech-config
 </pre>
 </div>
 </div>
@@ -656,7 +657,7 @@ Since you'll need to specify the kubectl config file each and every time you use
 code blocks.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org63e2acc">kubectl --kubeconfig=${HOME}/.kube/k3s-1.rymcg.tech-config
+<pre class="src src-config" id="orge8ac844">kubectl --kubeconfig=${HOME}/.kube/k3s-1.rymcg.tech-config
 </pre>
 </div>
 </div>
@@ -731,7 +732,7 @@ Edit the variables for the Traefik config:
 provider. 
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgf763aee">letsencrypt@enigmacurry.com
+<pre class="src src-config" id="org673a9e7">letsencrypt@enigmacurry.com
 </pre>
 </div>
 </div>
@@ -747,7 +748,7 @@ valid certificates in web browsers).
 </p>
 
 <div class="org-src-container">
-<pre class="src src-config" id="orgadf8c2d">https://acme-staging-v02.api.letsencrypt.org/directory
+<pre class="src src-config" id="org860ccf0">https://acme-staging-v02.api.letsencrypt.org/directory
 </pre>
 </div>
 </div>
@@ -762,7 +763,7 @@ domain name to respond to. <code>TRAEFIK_WHOAMI_DOMAIN</code> is the subdomain t
 whoami service responds to.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org7e11baf">whoami.k3s-1.rymcg.tech
+<pre class="src src-config" id="orga8ab934">whoami.k3s-1.rymcg.tech
 </pre>
 </div>
 </div>
@@ -774,7 +775,7 @@ whoami service responds to.
 The version number of Traefik to install (eg. <code>2.3</code>).
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orged836fe">v2.3
+<pre class="src src-config" id="orgacb653e">v2.3
 </pre>
 </div>
 </div>
@@ -786,7 +787,7 @@ The version number of Traefik to install (eg. <code>2.3</code>).
 <code>TRAEFIK_LOG_LEVEL</code> is the filter level on the traefik log.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgb1cecab">INFO
+<pre class="src src-config" id="orgb630d87">INFO
 </pre>
 </div>
 </div>
@@ -810,7 +811,7 @@ repository. Only the cluster can decrypt sealed secrets.
 <h4 id="kube-system%2Fsealed-secrets%2Fkustomization.yaml"><span class="section-number-4">4.2.1</span> kube-system/sealed-secrets/kustomization.yaml</h4>
 <div class="outline-text-4" id="text-4-2-1">
 <div class="org-src-container">
-<pre class="src src-yaml" id="orga3444ed"><span style="color: #7590db;">apiVersion</span>: kustomize.config.k8s.io/v1beta1
+<pre class="src src-yaml" id="org1d34239"><span style="color: #7590db;">apiVersion</span>: kustomize.config.k8s.io/v1beta1
 <span style="color: #7590db;">kind</span>: Kustomization
 <span style="color: #7590db;">resources</span>:
 - https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.14.1/controller.yaml
@@ -825,7 +826,7 @@ repository. Only the cluster can decrypt sealed secrets.
 Choose the <a href="https://github.com/bitnami-labs/sealed-secrets/releases">release version for Sealed Secrets</a>
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org0ae8ecd">v0.14.1
+<pre class="src src-config" id="orgc4b8ebf">v0.14.1
 </pre>
 </div>
 </div>
@@ -902,7 +903,7 @@ Test with TLS verification on:
 </div>
 
 <p>
-TLS will not verify until you use the production <a href="#orgadf8c2d">TRAEFIK_ACME_SERVER</a>.
+TLS will not verify until you use the production <a href="#org860ccf0">TRAEFIK_ACME_SERVER</a>.
 </p>
 </div>
 </div>
@@ -1118,7 +1119,7 @@ to direct traffic to any other node.
 <div class="outline-text-4" id="text-4-3-7">
 <p>
 <a href="https://github.com/traefik/whoami">traefik/whoami</a> can be deployed to test Traefik functionality. It listens to the
-domain <a href="#org7e11baf">TRAEFIK_WHOAMI_DOMAIN</a> (eg. <code>whoami.k3s.example.com</code>).
+domain <a href="#orga8ab934">TRAEFIK_WHOAMI_DOMAIN</a> (eg. <code>whoami.k3s.example.com</code>).
 </p>
 
 <div class="org-src-container">
@@ -1225,7 +1226,7 @@ The name of the git repository containing these org files, and from which flux
 reads. Usually it's the same as <code>CLUSTER</code>.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org38332d0">k3s-1.rymcg.tech
+<pre class="src src-config" id="org55e4feb">k3s-1.rymcg.tech
 </pre>
 </div>
 </div>
@@ -1237,7 +1238,7 @@ reads. Usually it's the same as <code>CLUSTER</code>.
 The name of the owner of the git repository.
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgf7f68e2">enigmacurry
+<pre class="src src-config" id="org46b8754">enigmacurry
 </pre>
 </div>
 </div>
@@ -1249,7 +1250,7 @@ The name of the owner of the git repository.
 The Hostname and Port number of the git repository remote URL:
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgc9579c3">github.com:22
+<pre class="src src-config" id="org9971451">github.com:22
 </pre>
 </div>
 </div>
@@ -1265,7 +1266,7 @@ organization name. (This might work with other URL forms, like HTTPS, but this
 is the only one that's been tested:)
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgf332ca8">ssh://git@github.com:22/enigmacurry/k3s-1.rymcg.tech.git
+<pre class="src src-config" id="org2dac7dc">ssh://git@github.com:22/enigmacurry/k3s-1.rymcg.tech.git
 </pre>
 </div>
 </div>
@@ -1319,7 +1320,7 @@ with its state.
 
 <p>
 If using Gitea, click the <code>+</code> icon in the upper right corner to create a <code>New
-Repository</code>. Call the new repository the same as <a href="#org38332d0">FLUX_REPO_NAME</a>.
+Repository</code>. Call the new repository the same as <a href="#org55e4feb">FLUX_REPO_NAME</a>.
 </p>
 
 <p>
@@ -1574,7 +1575,7 @@ And in another minute or so, the namespace should be gone:
 How big do you need the Database volume?
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgda79488">1Gi
+<pre class="src src-config" id="org3f9da88">1Gi
 </pre>
 </div>
 </div>
@@ -1586,7 +1587,7 @@ How big do you need the Database volume?
 What version of the <a href="https://github.com/bitnami/charts/tree/master/bitnami/postgresql">PostgreSQL Helm Chart</a> do you want to install?
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="org9c90d45">10.1.1
+<pre class="src src-config" id="orgd67cfc5">10.1.1
 </pre>
 </div>
 </div>
@@ -1596,7 +1597,7 @@ What version of the <a href="https://github.com/bitnami/charts/tree/master/bitna
 <h4 id="POSTGRES_DATABASE_NAME"><span class="section-number-4">6.1.3</span> POSTGRES_DATABASE_NAME</h4>
 <div class="outline-text-4" id="text-6-1-3">
 <div class="org-src-container">
-<pre class="src src-config" id="org8c8d96f">pyapp
+<pre class="src src-config" id="org317b6ec">pyapp
 </pre>
 </div>
 </div>
@@ -1605,7 +1606,7 @@ What version of the <a href="https://github.com/bitnami/charts/tree/master/bitna
 <h4 id="POSTGRES_DATABASE_USER"><span class="section-number-4">6.1.4</span> POSTGRES_DATABASE_USER</h4>
 <div class="outline-text-4" id="text-6-1-4">
 <div class="org-src-container">
-<pre class="src src-config" id="org985a769">pyapp
+<pre class="src src-config" id="org52244c7">pyapp
 </pre>
 </div>
 </div>
@@ -1638,7 +1639,7 @@ directly from the Secret stored in the cluster and set this variable:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell" id="orgb634354"><span style="color: #4f97d7;">export</span> <span style="color: #7590db;">KUBECONFIG</span>=$<span style="color: #4f97d7;">{</span><span style="color: #7590db;">HOME</span><span style="color: #4f97d7;">}</span>/.kube/k3s-1.rymcg.tech-config
+<pre class="src src-shell" id="org924cf8a"><span style="color: #4f97d7;">export</span> <span style="color: #7590db;">KUBECONFIG</span>=$<span style="color: #4f97d7;">{</span><span style="color: #7590db;">HOME</span><span style="color: #4f97d7;">}</span>/.kube/k3s-1.rymcg.tech-config
 <span style="color: #4f97d7;">export</span> <span style="color: #7590db;">PGPASSWORD</span>=$<span style="color: #4f97d7;">(</span><span style="color: #fa8072;">kubectl</span> -n postgres get secret/postgres-postgresql <span style="color: #2d9574;">\</span>
   -o <span style="color: #7590db;">jsonpath</span>=<span style="color: #2d9574;">'{.data.postgresql-password}'</span> | base64 -d<span style="color: #4f97d7;">)</span>
 <span style="color: #4f97d7;">export</span> <span style="color: #7590db;">PGHOST</span>=localhost
@@ -1741,12 +1742,26 @@ psql -c <span style="color: #2d9574;">'SELECT 1'</span>
 <h2 id="pyapp"><span class="section-number-2">7</span> pyapp</h2>
 <div class="outline-text-2" id="text-7">
 <p>
-<code>pyapp</code> is the namespace that will contain the Python app with FastAPI server.
-It will connect to the database already prepared in the <code>postgres</code> namespace.
-The python app itself (which builds into a container) has source code in a
-sub-directory of the same name: <code>pyapp</code>.
+<code>pyapp</code> is the namespace that will contain a RESTful Python API web service
+built with FastAPI and SQLAlchemy. It will connect to the database already
+prepared in the <code>postgres</code> namespace. The python source code (which builds into
+a container) is tangled from this document into a sub-directory of the same
+name: <code>pyapp</code>.
 </p>
+
+<p>
+The application is just a demo of a few different common patterns:
+</p>
+<ul class="org-ul">
+<li>A Hello World HTTP GET demo.</li>
+<li>User authentication and authorization.</li>
+<li>Using Redis as a page visit counter.</li>
+<li>User roles and preferences stored in PostgreSQL.</li>
+<li>Using Redis pub/sub channels with FastAPI websocket subscribers.</li>
+<li>A chat room.</li>
+</ul>
 </div>
+
 <div id="outline-container-pyapp%20config" class="outline-3">
 <h3 id="pyapp%20config"><span class="section-number-3">7.1</span> pyapp config</h3>
 <div class="outline-text-3" id="text-7-1">
@@ -1758,7 +1773,7 @@ sub-directory of the same name: <code>pyapp</code>.
 What is the name of the image to build with FastAPI?
 </p>
 <div class="org-src-container">
-<pre class="src src-config" id="orgc59ffed">ghcr.io/enigmacurry/fastapi-demo-pyapp
+<pre class="src src-config" id="org2ffd27f">ghcr.io/enigmacurry/k3s-1.rymcg.tech/fastapi-demo-pyapp
 </pre>
 </div>
 </div>
@@ -1818,13 +1833,18 @@ output.
 </p>
 
 <p>
-You can test that the service endpoint works, with curl:
+You can test that the service endpoint works, with curl (Try it out multiple
+times with a different user agent and/or different name.):
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell">curl http://127.0.0.1:8000/?<span style="color: #7590db;">name</span>=$<span style="color: #4f97d7;">{</span><span style="color: #7590db;">USER</span><span style="color: #4f97d7;">}</span>
+<pre class="src src-shell">curl -v -A <span style="color: #2d9574;">"my-user-agent"</span> http://127.0.0.1:8000/?<span style="color: #7590db;">name</span>=$<span style="color: #4f97d7;">{</span><span style="color: #7590db;">USER</span><span style="color: #4f97d7;">}</span>
 </pre>
 </div>
+
+<pre class="example">
+{"detail":"Not authenticated"}
+</pre>
 </div>
 </div>
 
@@ -1835,7 +1855,7 @@ You can test that the service endpoint works, with curl:
 Rebuild the container image:
 </p>
 <div class="org-src-container">
-<pre class="src src-shell">podman build -t ghcr.io/enigmacurry/fastapi-demo-pyapp ~/git/clusters/k3s-1.rymcg.tech/pyapp/pyapp
+<pre class="src src-shell">podman build -t ghcr.io/enigmacurry/k3s-1.rymcg.tech/fastapi-demo-pyapp ~/git/clusters/k3s-1.rymcg.tech/pyapp/pyapp
 </pre>
 </div>
 
@@ -1843,7 +1863,7 @@ Rebuild the container image:
 Push the image to the registry:
 </p>
 <div class="org-src-container">
-<pre class="src src-shell">podman push ghcr.io/enigmacurry/fastapi-demo-pyapp
+<pre class="src src-shell">podman push ghcr.io/enigmacurry/k3s-1.rymcg.tech/fastapi-demo-pyapp
 </pre>
 </div>
 </div>
@@ -1856,43 +1876,125 @@ Push the image to the registry:
 This is the main FastAPI server code:
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #4f97d7; font-weight: bold;">from</span> fastapi <span style="color: #4f97d7; font-weight: bold;">import</span> FastAPI, Header
-<span style="color: #4f97d7; font-weight: bold;">from</span> typing <span style="color: #4f97d7; font-weight: bold;">import</span> Optional
-<span style="color: #4f97d7; font-weight: bold;">import</span> model
-<span style="color: #4f97d7; font-weight: bold;">import</span> logging
-<span style="color: #4f97d7; font-weight: bold;">import</span> hashlib
+<pre class="src src-python"><span style="color: #4f97d7; font-weight: bold;">import</span> databases
+<span style="color: #4f97d7; font-weight: bold;">import</span> sqlalchemy
+<span style="color: #4f97d7; font-weight: bold;">from</span> fastapi <span style="color: #4f97d7; font-weight: bold;">import</span> FastAPI, Request
+<span style="color: #4f97d7; font-weight: bold;">from</span> fastapi_users <span style="color: #4f97d7; font-weight: bold;">import</span> FastAPIUsers, models
+<span style="color: #4f97d7; font-weight: bold;">from</span> fastapi_users.authentication <span style="color: #4f97d7; font-weight: bold;">import</span> JWTAuthentication
+<span style="color: #4f97d7; font-weight: bold;">from</span> fastapi_users.db <span style="color: #4f97d7; font-weight: bold;">import</span> <span style="color: #4f97d7;">(</span>
+    SQLAlchemyBaseOAuthAccountTable,
+    SQLAlchemyBaseUserTable,
+    SQLAlchemyUserDatabase,
+<span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7; font-weight: bold;">from</span> httpx_oauth.clients.github <span style="color: #4f97d7; font-weight: bold;">import</span> GitHubOAuth2
+<span style="color: #4f97d7; font-weight: bold;">from</span> sqlalchemy.ext.declarative <span style="color: #4f97d7; font-weight: bold;">import</span> DeclarativeMeta, declarative_base
 
-logging.basicConfig<span style="color: #4f97d7;">(</span>level=logging.DEBUG<span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">log</span> = logging.getLogger<span style="color: #4f97d7;">(</span><span style="color: #4f97d7;">__name__</span><span style="color: #4f97d7;">)</span>
+<span style="color: #7590db;">DATABASE_URL</span> = <span style="color: #2d9574;">"sqlite://"</span>
+<span style="color: #7590db;">SECRET</span> = os.environ<span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'PYAPP_JWT_SECRET'</span><span style="color: #4f97d7;">]</span>
+
+<span style="color: #7590db;">github_oauth_client</span> = GitHubOAuth2<span style="color: #4f97d7;">(</span>
+    os.environ<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">'GITHUB_OAUTH_CLIENT_ID'</span><span style="color: #bc6ec5;">]</span>,
+    os.environ<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">'GITHUB_OAUTH_CLIENT_SECRET'</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7; font-weight: bold;">class</span> <span style="color: #ce537a; font-weight: bold;">User</span><span style="color: #4f97d7;">(</span>models.BaseUser, models.BaseOAuthAccountMixin<span style="color: #4f97d7;">)</span>:
+    <span style="color: #4f97d7; font-weight: bold;">pass</span>
+
+
+<span style="color: #4f97d7; font-weight: bold;">class</span> <span style="color: #ce537a; font-weight: bold;">UserCreate</span><span style="color: #4f97d7;">(</span>models.BaseUserCreate<span style="color: #4f97d7;">)</span>:
+    <span style="color: #4f97d7; font-weight: bold;">pass</span>
+
+
+<span style="color: #4f97d7; font-weight: bold;">class</span> <span style="color: #ce537a; font-weight: bold;">UserUpdate</span><span style="color: #4f97d7;">(</span>User, models.BaseUserUpdate<span style="color: #4f97d7;">)</span>:
+    <span style="color: #4f97d7; font-weight: bold;">pass</span>
+
+
+<span style="color: #4f97d7; font-weight: bold;">class</span> <span style="color: #ce537a; font-weight: bold;">UserDB</span><span style="color: #4f97d7;">(</span>User, models.BaseUserDB<span style="color: #4f97d7;">)</span>:
+    <span style="color: #4f97d7; font-weight: bold;">pass</span>
+
+
+<span style="color: #7590db;">database</span> = databases.Database<span style="color: #4f97d7;">(</span>DATABASE_URL<span style="color: #4f97d7;">)</span>
+Base: <span style="color: #7590db;">DeclarativeMeta</span> = declarative_base<span style="color: #4f97d7;">()</span>
+
+
+<span style="color: #4f97d7; font-weight: bold;">class</span> <span style="color: #ce537a; font-weight: bold;">UserTable</span><span style="color: #4f97d7;">(</span>Base, SQLAlchemyBaseUserTable<span style="color: #4f97d7;">)</span>:
+    <span style="color: #4f97d7; font-weight: bold;">pass</span>
+
+
+<span style="color: #4f97d7; font-weight: bold;">class</span> <span style="color: #ce537a; font-weight: bold;">OAuthAccount</span><span style="color: #4f97d7;">(</span>SQLAlchemyBaseOAuthAccountTable, Base<span style="color: #4f97d7;">)</span>:
+    <span style="color: #4f97d7; font-weight: bold;">pass</span>
+
+
+<span style="color: #7590db;">engine</span> = sqlalchemy.create_engine<span style="color: #4f97d7;">(</span>
+    DATABASE_URL, connect_args=<span style="color: #bc6ec5;">{</span><span style="color: #2d9574;">"check_same_thread"</span>: <span style="color: #a45bad;">False</span><span style="color: #bc6ec5;">}</span>
+<span style="color: #4f97d7;">)</span>
+Base.metadata.create_all<span style="color: #4f97d7;">(</span>engine<span style="color: #4f97d7;">)</span>
+
+<span style="color: #7590db;">users</span> = UserTable.__table__
+<span style="color: #7590db;">oauth_accounts</span> = OAuthAccount.__table__
+<span style="color: #7590db;">user_db</span> = SQLAlchemyUserDatabase<span style="color: #4f97d7;">(</span>UserDB, database, users, oauth_accounts<span style="color: #4f97d7;">)</span>
+
+
+<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">on_after_register</span><span style="color: #4f97d7;">(</span>user: UserDB, request: Request<span style="color: #4f97d7;">)</span>:
+    <span style="color: #4f97d7; font-weight: bold;">print</span><span style="color: #4f97d7;">(</span>f<span style="color: #2d9574;">"User {user.id} has registered."</span><span style="color: #4f97d7;">)</span>
+
+
+<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">on_after_forgot_password</span><span style="color: #4f97d7;">(</span>user: UserDB, token: <span style="color: #4f97d7;">str</span>, request: Request<span style="color: #4f97d7;">)</span>:
+    <span style="color: #4f97d7; font-weight: bold;">print</span><span style="color: #4f97d7;">(</span>f<span style="color: #2d9574;">"User {user.id} has forgot their password. Reset token: {token}"</span><span style="color: #4f97d7;">)</span>
+
+
+<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">after_verification_request</span><span style="color: #4f97d7;">(</span>user: UserDB, token: <span style="color: #4f97d7;">str</span>, request: Request<span style="color: #4f97d7;">)</span>:
+    <span style="color: #4f97d7; font-weight: bold;">print</span><span style="color: #4f97d7;">(</span>f<span style="color: #2d9574;">"Verification requested for user {user.id}. Verification token: {token}"</span><span style="color: #4f97d7;">)</span>
+
+
+<span style="color: #7590db;">jwt_authentication</span> = JWTAuthentication<span style="color: #4f97d7;">(</span>
+    secret=SECRET, lifetime_seconds=<span style="color: #a45bad;">3600</span>, tokenUrl=<span style="color: #2d9574;">"/auth/jwt/login"</span>
+<span style="color: #4f97d7;">)</span>
+
 <span style="color: #7590db;">app</span> = FastAPI<span style="color: #4f97d7;">()</span>
+<span style="color: #7590db;">fastapi_users</span> = FastAPIUsers<span style="color: #4f97d7;">(</span>
+    user_db,
+    <span style="color: #bc6ec5;">[</span>jwt_authentication<span style="color: #bc6ec5;">]</span>,
+    User,
+    UserCreate,
+    UserUpdate,
+    UserDB,
+<span style="color: #4f97d7;">)</span>
+app.include_router<span style="color: #4f97d7;">(</span>
+    fastapi_users.get_auth_router<span style="color: #bc6ec5;">(</span>jwt_authentication<span style="color: #bc6ec5;">)</span>, prefix=<span style="color: #2d9574;">"/auth/jwt"</span>, tags=<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">"auth"</span><span style="color: #bc6ec5;">]</span>
+<span style="color: #4f97d7;">)</span>
+app.include_router<span style="color: #4f97d7;">(</span>
+    fastapi_users.get_register_router<span style="color: #bc6ec5;">(</span>on_after_register<span style="color: #bc6ec5;">)</span>, prefix=<span style="color: #2d9574;">"/auth"</span>, tags=<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">"auth"</span><span style="color: #bc6ec5;">]</span>
+<span style="color: #4f97d7;">)</span>
+app.include_router<span style="color: #4f97d7;">(</span>
+    fastapi_users.get_reset_password_router<span style="color: #bc6ec5;">(</span>
+        SECRET, after_forgot_password=on_after_forgot_password
+    <span style="color: #bc6ec5;">)</span>,
+    prefix=<span style="color: #2d9574;">"/auth"</span>,
+    tags=<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">"auth"</span><span style="color: #bc6ec5;">]</span>,
+<span style="color: #4f97d7;">)</span>
+app.include_router<span style="color: #4f97d7;">(</span>
+    fastapi_users.get_verify_router<span style="color: #bc6ec5;">(</span>
+        SECRET, after_verification_request=after_verification_request
+    <span style="color: #bc6ec5;">)</span>,
+    prefix=<span style="color: #2d9574;">"/auth"</span>,
+    tags=<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">"auth"</span><span style="color: #bc6ec5;">]</span>,
+<span style="color: #4f97d7;">)</span>
+app.include_router<span style="color: #4f97d7;">(</span>fastapi_users.get_users_router<span style="color: #bc6ec5;">()</span>, prefix=<span style="color: #2d9574;">"/users"</span>, tags=<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">"users"</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
 
-<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">record_visit</span><span style="color: #4f97d7;">(</span>path, ip_address, user_agent, name<span style="color: #4f97d7;">)</span>:
-    <span style="color: #7590db;">fingerprint</span> = hashlib.sha256<span style="color: #4f97d7;">(</span>
-        f<span style="color: #2d9574;">"{ip_address}-{user_agent}-{name}"</span>.encode<span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">"utf-8"</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>.hexdigest<span style="color: #4f97d7;">()</span>
-    <span style="color: #4f97d7; font-weight: bold;">with</span> model.session<span style="color: #4f97d7;">()</span> <span style="color: #4f97d7; font-weight: bold;">as</span> s:
-        <span style="color: #7590db;">r</span> = s.execute<span style="color: #4f97d7;">(</span>model.VisitsRecord.search<span style="color: #bc6ec5;">(</span>path, fingerprint<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>.first<span style="color: #4f97d7;">()</span>
-        <span style="color: #4f97d7; font-weight: bold;">if</span> r <span style="color: #4f97d7; font-weight: bold;">is</span> <span style="color: #a45bad;">None</span>:
-            <span style="color: #7590db;">r</span> = model.VisitsRecord<span style="color: #4f97d7;">(</span>path=path, user_fingerprint=fingerprint, visits=<span style="color: #a45bad;">1</span><span style="color: #4f97d7;">)</span>
-            s.add<span style="color: #4f97d7;">(</span>r<span style="color: #4f97d7;">)</span>
-        <span style="color: #4f97d7; font-weight: bold;">else</span>:
-            s.execute<span style="color: #4f97d7;">(</span>model.VisitsRecord.visit<span style="color: #bc6ec5;">(</span>path, fingerprint<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-            <span style="color: #7590db;">r</span> = s.execute<span style="color: #4f97d7;">(</span>model.VisitsRecord.search<span style="color: #bc6ec5;">(</span>path, fingerprint<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>.first<span style="color: #4f97d7;">()[</span><span style="color: #a45bad;">0</span><span style="color: #4f97d7;">]</span>
-        log.info<span style="color: #4f97d7;">(</span>f<span style="color: #2d9574;">"Visit: path={path} r={r}"</span><span style="color: #4f97d7;">)</span>
-        s.commit<span style="color: #4f97d7;">()</span>
-        <span style="color: #4f97d7; font-weight: bold;">return</span> r.visits
+<span style="color: #7590db;">google_oauth_router</span> = fastapi_users.get_oauth_router<span style="color: #4f97d7;">(</span>
+    google_oauth_client, SECRET, after_register=on_after_register
+<span style="color: #4f97d7;">)</span>
+app.include_router<span style="color: #4f97d7;">(</span>github_oauth_router, prefix=<span style="color: #2d9574;">"/auth/github"</span>, tags=<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">"auth"</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
 
-<span style="color: #ce537a; font-weight: bold;">@app.get</span><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"/"</span><span style="color: #4f97d7;">)</span>
-<span style="color: #4f97d7; font-weight: bold;">async def</span> <span style="color: #bc6ec5; font-weight: bold;">root</span><span style="color: #4f97d7;">(</span>x_real_ip: <span style="color: #4f97d7;">str</span> = Header<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">None</span><span style="color: #bc6ec5;">)</span>,
-               user_agent: <span style="color: #4f97d7;">str</span> = Header<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">None</span><span style="color: #bc6ec5;">)</span>,
-               name: Optional<span style="color: #bc6ec5;">[</span><span style="color: #4f97d7;">str</span><span style="color: #bc6ec5;">]</span> = <span style="color: #a45bad;">None</span><span style="color: #4f97d7;">)</span>:
-    <span style="color: #7590db;">num_visits</span> = record_visit<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"/"</span>, x_real_ip, user_agent, name<span style="color: #4f97d7;">)</span>
-    <span style="color: #7590db;">greet</span> = <span style="color: #2d9574;">"Hi there"</span> <span style="color: #4f97d7; font-weight: bold;">if</span> name <span style="color: #4f97d7; font-weight: bold;">is</span> <span style="color: #a45bad;">None</span> <span style="color: #4f97d7; font-weight: bold;">else</span> f<span style="color: #2d9574;">"Hi {name}"</span>
-    <span style="color: #4f97d7; font-weight: bold;">if</span> num_visits == <span style="color: #a45bad;">1</span>:
-        <span style="color: #4f97d7; font-weight: bold;">return</span> <span style="color: #4f97d7;">dict</span><span style="color: #4f97d7;">(</span>
-            message=f<span style="color: #2d9574;">"{greet}, this must be your first time visiting this page"</span><span style="color: #4f97d7;">)</span>
-    <span style="color: #4f97d7; font-weight: bold;">else</span>:
-        <span style="color: #4f97d7; font-weight: bold;">return</span> <span style="color: #4f97d7;">dict</span><span style="color: #4f97d7;">(</span>
-            message=f<span style="color: #2d9574;">"{greet}, you have visited this page {num_visits} times."</span><span style="color: #4f97d7;">)</span>
+
+<span style="color: #ce537a; font-weight: bold;">@app.on_event</span><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"startup"</span><span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7; font-weight: bold;">async def</span> <span style="color: #bc6ec5; font-weight: bold;">startup</span><span style="color: #4f97d7;">()</span>:
+    <span style="color: #4f97d7; font-weight: bold;">await</span> database.connect<span style="color: #4f97d7;">()</span>
+
+
+<span style="color: #ce537a; font-weight: bold;">@app.on_event</span><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"shutdown"</span><span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7; font-weight: bold;">async def</span> <span style="color: #bc6ec5; font-weight: bold;">shutdown</span><span style="color: #4f97d7;">()</span>:
+    <span style="color: #4f97d7; font-weight: bold;">await</span> database.disconnect<span style="color: #4f97d7;">()</span>
 </pre>
 </div>
 </div>
@@ -1911,6 +2013,7 @@ This is the main SQLAlchemy Database code:
 <span style="color: #4f97d7; font-weight: bold;">from</span> typing <span style="color: #4f97d7; font-weight: bold;">import</span> List, Optional
 <span style="color: #4f97d7; font-weight: bold;">from</span> collections.abc <span style="color: #4f97d7; font-weight: bold;">import</span> Iterable
 <span style="color: #4f97d7; font-weight: bold;">import</span> os
+<span style="color: #4f97d7; font-weight: bold;">import</span> hashlib
 <span style="color: #4f97d7; font-weight: bold;">import</span> logging
 
 <span style="color: #7590db;">log</span> = logging.getLogger<span style="color: #4f97d7;">(</span><span style="color: #4f97d7;">__name__</span><span style="color: #4f97d7;">)</span>
@@ -1947,7 +2050,6 @@ This is the main SQLAlchemy Database code:
 <span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">session</span><span style="color: #4f97d7;">()</span>:
     <span style="color: #4f97d7; font-weight: bold;">return</span> Session<span style="color: #4f97d7;">(</span>engine<span style="color: #4f97d7;">)</span>
 
-
 <span style="color: #ce537a; font-weight: bold;">@mapper_registry.mapped</span>
 <span style="color: #ce537a; font-weight: bold;">@dataclass</span>
 <span style="color: #4f97d7; font-weight: bold;">class</span> <span style="color: #ce537a; font-weight: bold;">VisitsRecord</span>:
@@ -1975,14 +2077,63 @@ This is the main SQLAlchemy Database code:
             VisitsRecord.user_fingerprint == user_fingerprint
         <span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>.values<span style="color: #4f97d7;">(</span>visits=VisitsRecord.visits + <span style="color: #a45bad;">1</span><span style="color: #4f97d7;">)</span>
 
+<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">record_visit</span><span style="color: #4f97d7;">(</span>path, ip_address, user_agent, name<span style="color: #4f97d7;">)</span>:
+    <span style="color: #2aa1ae;">"Record a visit to a path and return the number of visits by this fingerprint"</span>
+    <span style="color: #7590db;">fingerprint</span> = hashlib.sha256<span style="color: #4f97d7;">(</span>
+        f<span style="color: #2d9574;">"{ip_address}-{user_agent}-{name}"</span>.encode<span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">"utf-8"</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>.hexdigest<span style="color: #4f97d7;">()</span>
+    <span style="color: #4f97d7; font-weight: bold;">with</span> session<span style="color: #4f97d7;">()</span> <span style="color: #4f97d7; font-weight: bold;">as</span> s:
+        <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Find the existing record of visits to this path by this fingerprint:</span>
+        <span style="color: #7590db;">r</span> = s.execute<span style="color: #4f97d7;">(</span>VisitsRecord.search<span style="color: #bc6ec5;">(</span>path, fingerprint<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>.first<span style="color: #4f97d7;">()</span>
+        <span style="color: #4f97d7; font-weight: bold;">if</span> r <span style="color: #4f97d7; font-weight: bold;">is</span> <span style="color: #a45bad;">None</span>:
+            <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Initialize the very first visit to this path by this fingerprint</span>
+            <span style="color: #7590db;">r</span> = VisitsRecord<span style="color: #4f97d7;">(</span>path=path, user_fingerprint=fingerprint, visits=<span style="color: #a45bad;">1</span><span style="color: #4f97d7;">)</span>
+            s.add<span style="color: #4f97d7;">(</span>r<span style="color: #4f97d7;">)</span>
+        <span style="color: #4f97d7; font-weight: bold;">else</span>:
+            <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Add to the pagecount of this path for this fingerprint:</span>
+            s.execute<span style="color: #4f97d7;">(</span>VisitsRecord.visit<span style="color: #bc6ec5;">(</span>path, fingerprint<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+            <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Retrieve the new record:</span>
+            <span style="color: #7590db;">r</span> = s.execute<span style="color: #4f97d7;">(</span>VisitsRecord.search<span style="color: #bc6ec5;">(</span>path, fingerprint<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>.first<span style="color: #4f97d7;">()[</span><span style="color: #a45bad;">0</span><span style="color: #4f97d7;">]</span>
+        log.info<span style="color: #4f97d7;">(</span>f<span style="color: #2d9574;">"Visit: path={path} r={r}"</span><span style="color: #4f97d7;">)</span>
+        s.commit<span style="color: #4f97d7;">()</span>
+        <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Return the # of times this path has been accessed by this fingerprint</span>
+        <span style="color: #4f97d7; font-weight: bold;">return</span> r.visits
+
 mapper_registry.metadata.create_all<span style="color: #4f97d7;">()</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-pyapp%2Fpyapp%2FDockerfile" class="outline-3">
-<h3 id="pyapp%2Fpyapp%2FDockerfile"><span class="section-number-3">7.8</span> pyapp/pyapp/Dockerfile</h3>
+<div id="outline-container-pyapp%2Fpyapp%2Fpyproject.toml" class="outline-3">
+<h3 id="pyapp%2Fpyapp%2Fpyproject.toml"><span class="section-number-3">7.8</span> pyapp/pyapp/pyproject.toml</h3>
 <div class="outline-text-3" id="text-7-8">
+<div class="org-src-container">
+<pre class="src src-yaml">[tool.poetry]
+name = <span style="color: #2d9574;">"pyapp"</span>
+version = <span style="color: #2d9574;">"0.0.1"</span>
+description = <span style="color: #2d9574;">"FastAPI server"</span>
+authors = [<span style="color: #2d9574;">"Some Developer <a href="mailto:you%40example.com">&lt;you@example.com&gt;</a>"</span>]
+license = <span style="color: #2d9574;">""</span>
+
+[tool.poetry.dependencies]
+python = <span style="color: #2d9574;">"^3.9"</span>
+fastapi = <span style="color: #2d9574;">"^0.63.0"</span>
+uvicorn = {extras = [<span style="color: #2d9574;">"standard"</span>], version = <span style="color: #2d9574;">"^0.13.3"</span>}
+psycopg2 = <span style="color: #2d9574;">"&gt;=2.8.6"</span>
+fastapi-users = {extras = [<span style="color: #2d9574;">"sqlalchemy"</span>, <span style="color: #2d9574;">"oauth"</span>], version = <span style="color: #2d9574;">"^5.1.0"</span>}
+databases = {extras = [<span style="color: #2d9574;">"postgresql"</span>, <span style="color: #2d9574;">"sqlite"</span>], version = <span style="color: #2d9574;">"^0.4.1"</span>}
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = [<span style="color: #2d9574;">"poetry-core&gt;=1.0.0"</span>]
+build-backend = <span style="color: #2d9574;">"poetry.core.masonry.api"</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-pyapp%2Fpyapp%2FDockerfile" class="outline-3">
+<h3 id="pyapp%2Fpyapp%2FDockerfile"><span class="section-number-3">7.9</span> pyapp/pyapp/Dockerfile</h3>
+<div class="outline-text-3" id="text-7-9">
 <div class="org-src-container">
 <pre class="src src-docker">FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
 COPY ./ /app
@@ -1990,11 +2141,22 @@ COPY ./ /app
 </div>
 </div>
 </div>
-<div id="outline-container-pyapp%2Fpyapp%2F.gitignore" class="outline-3">
-<h3 id="pyapp%2Fpyapp%2F.gitignore"><span class="section-number-3">7.9</span> pyapp/pyapp/.gitignore</h3>
-<div class="outline-text-3" id="text-7-9">
+<div id="outline-container-pyapp%2Fpyapp%2F.dockerignore" class="outline-3">
+<h3 id="pyapp%2Fpyapp%2F.dockerignore"><span class="section-number-3">7.10</span> pyapp/pyapp/.dockerignore</h3>
+<div class="outline-text-3" id="text-7-10">
 <div class="org-src-container">
-<pre class="src src-python">env/
+<pre class="src src-docker">env/
+.env
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-pyapp%2Fpyapp%2F.gitignore" class="outline-3">
+<h3 id="pyapp%2Fpyapp%2F.gitignore"><span class="section-number-3">7.11</span> pyapp/pyapp/.gitignore</h3>
+<div class="outline-text-3" id="text-7-11">
+<div class="org-src-container">
+<pre class="src src-python">.env
+env/
 __pycache__/
 *.pyc
 </pre>
@@ -2002,8 +2164,8 @@ __pycache__/
 </div>
 </div>
 <div id="outline-container-pyapp%2Fkustomization.yaml" class="outline-3">
-<h3 id="pyapp%2Fkustomization.yaml"><span class="section-number-3">7.10</span> pyapp/kustomization.yaml</h3>
-<div class="outline-text-3" id="text-7-10">
+<h3 id="pyapp%2Fkustomization.yaml"><span class="section-number-3">7.12</span> pyapp/kustomization.yaml</h3>
+<div class="outline-text-3" id="text-7-12">
 <div class="org-src-container">
 <pre class="src src-yaml"><span style="color: #7590db;">apiVersion</span>: kustomize.config.k8s.io/v1beta1
 <span style="color: #7590db;">kind</span>: Kustomization
@@ -2015,8 +2177,8 @@ __pycache__/
 </div>
 </div>
 <div id="outline-container-pyapp%2Fnamespace.yaml" class="outline-3">
-<h3 id="pyapp%2Fnamespace.yaml"><span class="section-number-3">7.11</span> pyapp/namespace.yaml</h3>
-<div class="outline-text-3" id="text-7-11">
+<h3 id="pyapp%2Fnamespace.yaml"><span class="section-number-3">7.13</span> pyapp/namespace.yaml</h3>
+<div class="outline-text-3" id="text-7-13">
 <div class="org-src-container">
 <pre class="src src-yaml"><span style="color: #7590db;">apiVersion</span>: v1
 <span style="color: #7590db;">kind</span>: Namespace
@@ -2028,8 +2190,8 @@ __pycache__/
 </div>
 
 <div id="outline-container-pyapp%2Fdeployment.yaml" class="outline-3">
-<h3 id="pyapp%2Fdeployment.yaml"><span class="section-number-3">7.12</span> pyapp/deployment.yaml</h3>
-<div class="outline-text-3" id="text-7-12">
+<h3 id="pyapp%2Fdeployment.yaml"><span class="section-number-3">7.14</span> pyapp/deployment.yaml</h3>
+<div class="outline-text-3" id="text-7-14">
 <div class="org-src-container">
 <pre class="src src-yaml"><span style="color: #7590db;">apiVersion</span>: apps/v1
 <span style="color: #7590db;">kind</span>: Deployment
@@ -2049,36 +2211,9 @@ __pycache__/
     <span style="color: #7590db;">spec</span>:
       <span style="color: #7590db;">containers</span>:
       - <span style="color: #7590db;">name</span>: pyapp-fastapi
-        <span style="color: #7590db;">image</span>: ghcr.io/enigmacurry/fastapi-demo-pyapp
+        <span style="color: #7590db;">image</span>: ghcr.io/enigmacurry/k3s-1.rymcg.tech/fastapi-demo-pyapp
         <span style="color: #7590db;">ports</span>:
         - <span style="color: #7590db;">containerPort</span>: 8000
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-pyapp%2Fpyapp%2Fpyproject.toml" class="outline-3">
-<h3 id="pyapp%2Fpyapp%2Fpyproject.toml"><span class="section-number-3">7.13</span> pyapp/pyapp/pyproject.toml</h3>
-<div class="outline-text-3" id="text-7-13">
-<div class="org-src-container">
-<pre class="src src-yaml">[tool.poetry]
-name = <span style="color: #2d9574;">"pyapp"</span>
-version = <span style="color: #2d9574;">"0.0.1"</span>
-description = <span style="color: #2d9574;">"FastAPI server"</span>
-authors = [<span style="color: #2d9574;">"Some Developer <a href="mailto:you%40example.com">&lt;you@example.com&gt;</a>"</span>]
-license = <span style="color: #2d9574;">""</span>
-
-[tool.poetry.dependencies]
-python = <span style="color: #2d9574;">"^3.9"</span>
-fastapi = <span style="color: #2d9574;">"^0.63.0"</span>
-uvicorn = {extras = [<span style="color: #2d9574;">"standard"</span>], version = <span style="color: #2d9574;">"^0.13.3"</span>}
-sqlalchemy = <span style="color: #2d9574;">"&gt;=1.4.0b1"</span>
-psycopg2 = <span style="color: #2d9574;">"&gt;=2.8.6"</span>
-
-[tool.poetry.dev-dependencies]
-
-[build-system]
-requires = [<span style="color: #2d9574;">"poetry-core&gt;=1.0.0"</span>]
-build-backend = <span style="color: #2d9574;">"poetry.core.masonry.api"</span>
 </pre>
 </div>
 </div>
@@ -2176,7 +2311,7 @@ along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: EnigmaCurry</p>
-<p class="date">Created: 2021-02-15 Mon 18:00</p>
+<p class="date">Created: 2021-02-17 Wed 09:50</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 from collections.abc import Iterable
 import os
+import hashlib
 import logging
 
 log = logging.getLogger(__name__)
@@ -41,7 +42,6 @@ mapper_registry.metadata.bind = engine
 def session():
     return Session(engine)
 
-
 @mapper_registry.mapped
 @dataclass
 class VisitsRecord:
@@ -68,5 +68,26 @@ class VisitsRecord:
             VisitsRecord.path == path,
             VisitsRecord.user_fingerprint == user_fingerprint
         )).values(visits=VisitsRecord.visits + 1)
+
+def record_visit(path, ip_address, user_agent, name):
+    "Record a visit to a path and return the number of visits by this fingerprint"
+    fingerprint = hashlib.sha256(
+        f"{ip_address}-{user_agent}-{name}".encode("utf-8")).hexdigest()
+    with session() as s:
+        # Find the existing record of visits to this path by this fingerprint:
+        r = s.execute(VisitsRecord.search(path, fingerprint)).first()
+        if r is None:
+            # Initialize the very first visit to this path by this fingerprint
+            r = VisitsRecord(path=path, user_fingerprint=fingerprint, visits=1)
+            s.add(r)
+        else:
+            # Add to the pagecount of this path for this fingerprint:
+            s.execute(VisitsRecord.visit(path, fingerprint))
+            # Retrieve the new record:
+            r = s.execute(VisitsRecord.search(path, fingerprint)).first()[0]
+        log.info(f"Visit: path={path} r={r}")
+        s.commit()
+        # Return the # of times this path has been accessed by this fingerprint
+        return r.visits
 
 mapper_registry.metadata.create_all()

@@ -323,16 +323,26 @@ forward from your local workstation to the database:
 #+END_COMMENT
 #+INCLUDE: "~/git/vendor/enigmacurry/literate-k3s/lib/postgres.org"
 * pyapp
-=pyapp= is the namespace that will contain the Python app with FastAPI server.
-It will connect to the database already prepared in the =postgres= namespace.
-The python app itself (which builds into a container) has source code in a
-sub-directory of the same name: =pyapp=.
+=pyapp= is the namespace that will contain a RESTful Python API web service
+built with FastAPI and SQLAlchemy. It will connect to the database already
+prepared in the =postgres= namespace. The python source code (which builds into
+a container) is tangled from this document into a sub-directory of the same
+name: =pyapp=.
+
+The application is just a demo of a few different common patterns:
+ * A Hello World HTTP GET demo.
+ * User authentication and authorization.
+ * Using Redis as a page visit counter.
+ * User roles and preferences stored in PostgreSQL.
+ * Using Redis pub/sub channels with FastAPI websocket subscribers.
+ * A chat room.
+
 ** pyapp config
 *** PYAPP_FASTAPI_IMAGE
     What is the name of the image to build with FastAPI?
     #+name: PYAPP_FASTAPI_IMAGE
     #+begin_src config :noweb yes :eval no
-    ghcr.io/<<FLUX_REPO_ORG>>/fastapi-demo-pyapp
+    ghcr.io/<<FLUX_REPO_ORG>>/<<FLUX_REPO_NAME>>/fastapi-demo-pyapp
     #+end_src
 ** Install local development requirements 
   1. Install Python 3 from your package manager.
@@ -368,11 +378,15 @@ poetry update && poetry install && uvicorn main:app --reload &
 You can switch to the =pyapp-uvicorn= Emacs buffer to watch the application log
 output.
 
-You can test that the service endpoint works, with curl:
+You can test that the service endpoint works, with curl (Try it out multiple
+times with a different user agent and/or different name.):
 
 #+begin_src shell :noweb yes :eval never-export :exports both :results output
-curl http://127.0.0.1:8000/?name=${USER}
+curl -v -A "my-user-agent" http://127.0.0.1:8000/?name=${USER}
 #+end_src
+
+#+RESULTS:
+: {"detail":"Not authenticated"}
 
 ** Build container image for production
    Rebuild the container image:
@@ -385,46 +399,130 @@ curl http://127.0.0.1:8000/?name=${USER}
    podman push <<PYAPP_FASTAPI_IMAGE>>
    #+end_src
 
+   #+RESULTS:
+
 ** pyapp/pyapp/main.py
 This is the main FastAPI server code:
 #+begin_src python :noweb yes :eval no :tangle pyapp/pyapp/main.py
-  from fastapi import FastAPI, Header
-  from typing import Optional
-  import model
-  import logging
-  import hashlib
+  import databases
+  import sqlalchemy
+  from fastapi import FastAPI, Request
+  from fastapi_users import FastAPIUsers, models
+  from fastapi_users.authentication import JWTAuthentication
+  from fastapi_users.db import (
+      SQLAlchemyBaseOAuthAccountTable,
+      SQLAlchemyBaseUserTable,
+      SQLAlchemyUserDatabase,
+  )
+  from httpx_oauth.clients.github import GitHubOAuth2
+  from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
-  logging.basicConfig(level=logging.DEBUG)
-  log = logging.getLogger(__name__)
+  DATABASE_URL = "sqlite://"
+  SECRET = os.environ['PYAPP_JWT_SECRET']
+
+  github_oauth_client = GitHubOAuth2(
+      os.environ['GITHUB_OAUTH_CLIENT_ID'],
+      os.environ['GITHUB_OAUTH_CLIENT_SECRET'])
+
+  class User(models.BaseUser, models.BaseOAuthAccountMixin):
+      pass
+
+
+  class UserCreate(models.BaseUserCreate):
+      pass
+
+
+  class UserUpdate(User, models.BaseUserUpdate):
+      pass
+
+
+  class UserDB(User, models.BaseUserDB):
+      pass
+
+
+  database = databases.Database(DATABASE_URL)
+  Base: DeclarativeMeta = declarative_base()
+
+
+  class UserTable(Base, SQLAlchemyBaseUserTable):
+      pass
+
+
+  class OAuthAccount(SQLAlchemyBaseOAuthAccountTable, Base):
+      pass
+
+
+  engine = sqlalchemy.create_engine(
+      DATABASE_URL, connect_args={"check_same_thread": False}
+  )
+  Base.metadata.create_all(engine)
+
+  users = UserTable.__table__
+  oauth_accounts = OAuthAccount.__table__
+  user_db = SQLAlchemyUserDatabase(UserDB, database, users, oauth_accounts)
+
+
+  def on_after_register(user: UserDB, request: Request):
+      print(f"User {user.id} has registered.")
+
+
+  def on_after_forgot_password(user: UserDB, token: str, request: Request):
+      print(f"User {user.id} has forgot their password. Reset token: {token}")
+
+
+  def after_verification_request(user: UserDB, token: str, request: Request):
+      print(f"Verification requested for user {user.id}. Verification token: {token}")
+
+
+  jwt_authentication = JWTAuthentication(
+      secret=SECRET, lifetime_seconds=3600, tokenUrl="/auth/jwt/login"
+  )
+
   app = FastAPI()
+  fastapi_users = FastAPIUsers(
+      user_db,
+      [jwt_authentication],
+      User,
+      UserCreate,
+      UserUpdate,
+      UserDB,
+  )
+  app.include_router(
+      fastapi_users.get_auth_router(jwt_authentication), prefix="/auth/jwt", tags=["auth"]
+  )
+  app.include_router(
+      fastapi_users.get_register_router(on_after_register), prefix="/auth", tags=["auth"]
+  )
+  app.include_router(
+      fastapi_users.get_reset_password_router(
+          SECRET, after_forgot_password=on_after_forgot_password
+      ),
+      prefix="/auth",
+      tags=["auth"],
+  )
+  app.include_router(
+      fastapi_users.get_verify_router(
+          SECRET, after_verification_request=after_verification_request
+      ),
+      prefix="/auth",
+      tags=["auth"],
+  )
+  app.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["users"])
 
-  def record_visit(path, ip_address, user_agent, name):
-      fingerprint = hashlib.sha256(
-          f"{ip_address}-{user_agent}-{name}".encode("utf-8")).hexdigest()
-      with model.session() as s:
-          r = s.execute(model.VisitsRecord.search(path, fingerprint)).first()
-          if r is None:
-              r = model.VisitsRecord(path=path, user_fingerprint=fingerprint, visits=1)
-              s.add(r)
-          else:
-              s.execute(model.VisitsRecord.visit(path, fingerprint))
-              r = s.execute(model.VisitsRecord.search(path, fingerprint)).first()[0]
-          log.info(f"Visit: path={path} r={r}")
-          s.commit()
-          return r.visits
+  google_oauth_router = fastapi_users.get_oauth_router(
+      google_oauth_client, SECRET, after_register=on_after_register
+  )
+  app.include_router(github_oauth_router, prefix="/auth/github", tags=["auth"])
 
-  @app.get("/")
-  async def root(x_real_ip: str = Header(None),
-                 user_agent: str = Header(None),
-                 name: Optional[str] = None):
-      num_visits = record_visit("/", x_real_ip, user_agent, name)
-      greet = "Hi there" if name is None else f"Hi {name}"
-      if num_visits == 1:
-          return dict(
-              message=f"{greet}, this must be your first time visiting this page")
-      else:
-          return dict(
-              message=f"{greet}, you have visited this page {num_visits} times.")
+
+  @app.on_event("startup")
+  async def startup():
+      await database.connect()
+
+
+  @app.on_event("shutdown")
+  async def shutdown():
+      await database.disconnect()
 #+end_src
 ** pyapp/pyapp/model.py
 This is the main SQLAlchemy Database code:
@@ -436,6 +534,7 @@ This is the main SQLAlchemy Database code:
   from typing import List, Optional
   from collections.abc import Iterable
   import os
+  import hashlib
   import logging
 
   log = logging.getLogger(__name__)
@@ -472,7 +571,6 @@ This is the main SQLAlchemy Database code:
   def session():
       return Session(engine)
 
-
   @mapper_registry.mapped
   @dataclass
   class VisitsRecord:
@@ -500,15 +598,65 @@ This is the main SQLAlchemy Database code:
               VisitsRecord.user_fingerprint == user_fingerprint
           )).values(visits=VisitsRecord.visits + 1)
 
+  def record_visit(path, ip_address, user_agent, name):
+      "Record a visit to a path and return the number of visits by this fingerprint"
+      fingerprint = hashlib.sha256(
+          f"{ip_address}-{user_agent}-{name}".encode("utf-8")).hexdigest()
+      with session() as s:
+          # Find the existing record of visits to this path by this fingerprint:
+          r = s.execute(VisitsRecord.search(path, fingerprint)).first()
+          if r is None:
+              # Initialize the very first visit to this path by this fingerprint
+              r = VisitsRecord(path=path, user_fingerprint=fingerprint, visits=1)
+              s.add(r)
+          else:
+              # Add to the pagecount of this path for this fingerprint:
+              s.execute(VisitsRecord.visit(path, fingerprint))
+              # Retrieve the new record:
+              r = s.execute(VisitsRecord.search(path, fingerprint)).first()[0]
+          log.info(f"Visit: path={path} r={r}")
+          s.commit()
+          # Return the # of times this path has been accessed by this fingerprint
+          return r.visits
+
   mapper_registry.metadata.create_all()
+#+end_src
+** pyapp/pyapp/pyproject.toml
+#+begin_src yaml :noweb yes :eval no :tangle pyapp/pyapp/pyproject.toml
+[tool.poetry]
+name = "pyapp"
+version = "0.0.1"
+description = "FastAPI server"
+authors = ["Some Developer <you@example.com>"]
+license = ""
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.63.0"
+uvicorn = {extras = ["standard"], version = "^0.13.3"}
+psycopg2 = ">=2.8.6"
+fastapi-users = {extras = ["sqlalchemy", "oauth"], version = "^5.1.0"}
+databases = {extras = ["postgresql", "sqlite"], version = "^0.4.1"}
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 #+end_src
 ** pyapp/pyapp/Dockerfile
 #+begin_src docker :noweb yes :eval no :tangle pyapp/pyapp/Dockerfile
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
 COPY ./ /app
 #+end_src
+** pyapp/pyapp/.dockerignore
+#+begin_src docker :noweb yes :eval no :tangle pyapp/pyapp/.dockerignore
+env/
+.env
+#+end_src
 ** pyapp/pyapp/.gitignore
 #+begin_src python :noweb yes :eval no :tangle pyapp/pyapp/.gitignore
+.env
 env/
 __pycache__/
 *.pyc
@@ -552,28 +700,6 @@ spec:
         image: <<PYAPP_FASTAPI_IMAGE>>
         ports:
         - containerPort: 8000
-#+end_src
-** pyapp/pyapp/pyproject.toml
-#+begin_src yaml :noweb yes :eval no :tangle pyapp/pyapp/pyproject.toml
-[tool.poetry]
-name = "pyapp"
-version = "0.0.1"
-description = "FastAPI server"
-authors = ["Some Developer <you@example.com>"]
-license = ""
-
-[tool.poetry.dependencies]
-python = "^3.9"
-fastapi = "^0.63.0"
-uvicorn = {extras = ["standard"], version = "^0.13.3"}
-sqlalchemy = ">=1.4.0b1"
-psycopg2 = ">=2.8.6"
-
-[tool.poetry.dev-dependencies]
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
 #+end_src
 * LICENSE
 #+INCLUDE: "~/git/vendor/enigmacurry/literate-k3s/LICENSE.org"

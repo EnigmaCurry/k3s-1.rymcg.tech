@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: pyapp-fastapi
-        image: ghcr.io/enigmacurry/fastapi-demo-pyapp
+        image: ghcr.io/enigmacurry/k3s-1.rymcg.tech/fastapi-demo-pyapp
         ports:
         - containerPort: 8000

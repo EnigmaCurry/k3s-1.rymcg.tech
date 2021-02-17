@@ -1,37 +1,119 @@
-from fastapi import FastAPI, Header
-from typing import Optional
-import model
-import logging
-import hashlib
+import databases
+import sqlalchemy
+from fastapi import FastAPI, Request
+from fastapi_users import FastAPIUsers, models
+from fastapi_users.authentication import JWTAuthentication
+from fastapi_users.db import (
+    SQLAlchemyBaseOAuthAccountTable,
+    SQLAlchemyBaseUserTable,
+    SQLAlchemyUserDatabase,
+)
+from httpx_oauth.clients.github import GitHubOAuth2
+from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
-logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger(__name__)
+DATABASE_URL = "sqlite://"
+SECRET = os.environ['PYAPP_JWT_SECRET']
+
+github_oauth_client = GitHubOAuth2(
+    os.environ['GITHUB_OAUTH_CLIENT_ID'],
+    os.environ['GITHUB_OAUTH_CLIENT_SECRET'])
+
+class User(models.BaseUser, models.BaseOAuthAccountMixin):
+    pass
+
+
+class UserCreate(models.BaseUserCreate):
+    pass
+
+
+class UserUpdate(User, models.BaseUserUpdate):
+    pass
+
+
+class UserDB(User, models.BaseUserDB):
+    pass
+
+
+database = databases.Database(DATABASE_URL)
+Base: DeclarativeMeta = declarative_base()
+
+
+class UserTable(Base, SQLAlchemyBaseUserTable):
+    pass
+
+
+class OAuthAccount(SQLAlchemyBaseOAuthAccountTable, Base):
+    pass
+
+
+engine = sqlalchemy.create_engine(
+    DATABASE_URL, connect_args={"check_same_thread": False}
+)
+Base.metadata.create_all(engine)
+
+users = UserTable.__table__
+oauth_accounts = OAuthAccount.__table__
+user_db = SQLAlchemyUserDatabase(UserDB, database, users, oauth_accounts)
+
+
+def on_after_register(user: UserDB, request: Request):
+    print(f"User {user.id} has registered.")
+
+
+def on_after_forgot_password(user: UserDB, token: str, request: Request):
+    print(f"User {user.id} has forgot their password. Reset token: {token}")
+
+
+def after_verification_request(user: UserDB, token: str, request: Request):
+    print(f"Verification requested for user {user.id}. Verification token: {token}")
+
+
+jwt_authentication = JWTAuthentication(
+    secret=SECRET, lifetime_seconds=3600, tokenUrl="/auth/jwt/login"
+)
+
 app = FastAPI()
+fastapi_users = FastAPIUsers(
+    user_db,
+    [jwt_authentication],
+    User,
+    UserCreate,
+    UserUpdate,
+    UserDB,
+)
+app.include_router(
+    fastapi_users.get_auth_router(jwt_authentication), prefix="/auth/jwt", tags=["auth"]
+)
+app.include_router(
+    fastapi_users.get_register_router(on_after_register), prefix="/auth", tags=["auth"]
+)
+app.include_router(
+    fastapi_users.get_reset_password_router(
+        SECRET, after_forgot_password=on_after_forgot_password
+    ),
+    prefix="/auth",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_verify_router(
+        SECRET, after_verification_request=after_verification_request
+    ),
+    prefix="/auth",
+    tags=["auth"],
+)
+app.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["users"])
 
-def record_visit(path, ip_address, user_agent, name):
-    fingerprint = hashlib.sha256(
-        f"{ip_address}-{user_agent}-{name}".encode("utf-8")).hexdigest()
-    with model.session() as s:
-        r = s.execute(model.VisitsRecord.search(path, fingerprint)).first()
-        if r is None:
-            r = model.VisitsRecord(path=path, user_fingerprint=fingerprint, visits=1)
-            s.add(r)
-        else:
-            s.execute(model.VisitsRecord.visit(path, fingerprint))
-            r = s.execute(model.VisitsRecord.search(path, fingerprint)).first()[0]
-        log.info(f"Visit: path={path} r={r}")
-        s.commit()
-        return r.visits
+google_oauth_router = fastapi_users.get_oauth_router(
+    google_oauth_client, SECRET, after_register=on_after_register
+)
+app.include_router(github_oauth_router, prefix="/auth/github", tags=["auth"])
 
-@app.get("/")
-async def root(x_real_ip: str = Header(None),
-               user_agent: str = Header(None),
-               name: Optional[str] = None):
-    num_visits = record_visit("/", x_real_ip, user_agent, name)
-    greet = "Hi there" if name is None else f"Hi {name}"
-    if num_visits == 1:
-        return dict(
-            message=f"{greet}, this must be your first time visiting this page")
-    else:
-        return dict(
-            message=f"{greet}, you have visited this page {num_visits} times.")
+
+@app.on_event("startup")
+async def startup():
+    await database.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
